@@ -78,13 +78,64 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  res.json({
-    msg: "You hit login route",
-  });
+  try {
+    const { email, password } = req.body;
+
+    const findUser = await User.findOne({ email });
+    const matchPassword = await bcrypt.compare(
+      password,
+      findUser?.password || ""
+    );
+
+    if (!findUser || !matchPassword) {
+      return res.status(400).json({
+        error: "Invalid username or password",
+      });
+    }
+    generateAndSetToken(findUser._id, res);
+
+    return res.status(200).json({
+      _id: findUser._id,
+      fullname: findUser.fullname,
+      email: findUser.email,
+      username: findUser.username,
+      profileImg: findUser.profileImg,
+      coverImg: findUser.coverImg,
+      bio: findUser.bio,
+      link: findUser.link,
+      followers: findUser.followers,
+      following: findUser.following,
+    });
+  } catch (error) {
+    console.log(`Error at login controller: ${error.message}`);
+    res.status(500).json({
+      error: "Internal server error",
+    });
+  }
 };
 
 export const logout = async (req, res) => {
-  res.json({
-    msg: "You hit logout route",
-  });
+  try {
+    res.clearCookie("jwt");
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.log(`Error in logout controller: ${error.message}`);
+    return res.status(500).json({
+      error: "Internal server error",
+    });
+  }
+};
+
+export const getMyData = async (req, res) => {
+  try {
+    const findUser = await User.findById(req.user._id).select("-password");
+    return res.status(200).json(findUser);
+  } catch (error) {
+    console.log(`Error in getMyData controller: ${error.message}`);
+    return res.status(500).json({
+      error: "Internal server error",
+    });
+  }
 };
