@@ -2,10 +2,12 @@ import express from "express";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import dotenv from "dotenv";
 import connectToMongoDB from "./db/databaseConfig.js";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
+import cors from "cors";
 
 dotenv.config();
 cloudinary.config({
@@ -17,11 +19,13 @@ cloudinary.config({
 const app = express();
 
 app.use(express.json({ extended: true }));
+app.use(cors());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 const port = process.env.PORT || 5000;
 
