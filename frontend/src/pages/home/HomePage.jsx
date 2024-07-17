@@ -5,7 +5,7 @@ import Posts from "../../components/commons/Posts";
 const HomePage = () => {
   const [feedType, setFeedType] = useState("forYou");
   return (
-    <div className="flex-[2.8] justify-center min-h-screen border-r border-[#2f3336]">
+    <div className="flex-[3] justify-center min-h-screen border-r border-[#2f3336]">
       <div className="sticky top-0 flex flex-grow-[2.5] border-b border-[#2f3336] bg-black bg-opacity-50 backdrop-blur-md">
         <div className="flex w-full justify-center">
           <div

@@ -18,11 +18,41 @@ import { HiMail, HiOutlineMail, HiDotsHorizontal } from "react-icons/hi";
 import { BsPeople, BsPeopleFill, BsPerson, BsPersonFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
-import { dummyProfile } from "../../utils/dummy/dummyData";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
 /* import { BsSlashSquare, BsSlashSquareFill } from "react-icons/bs"; */
 
 const Sidebar = () => {
   const [activeMenu, setActiveMenu] = useState("home");
+
+  const queryClient = useQueryClient();
+
+  const { data: profileData } = useQuery({ queryKey: ["authUser"] });
+  console.log(profileData);
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      try {
+        await axios.post("api/auth/logout");
+        queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      } catch (error) {
+        toast(error.response.data.error, {
+          position: "bottom-center",
+          style: {
+            backgroundColor: "#1d9bf0",
+            color: "#fff",
+          },
+        });
+      }
+    },
+  });
+
+  const logoutHandler = (e) => {
+    e.preventDefault();
+    mutate();
+  };
+
   return (
     <div className="lg:flex-[1.25] border-r border-[#2f3336]">
       <div className="sticky top-0 left-0">
@@ -191,24 +221,58 @@ const Sidebar = () => {
           </button>
         </div>
         <div className="mt-10 pl-2 lg:pl-0 pr-2 flex justify-end">
-          <div className="flex items-center hover:bg-secondary hover:rounded-full p-3">
-            <div className="w-11 h-11">
-              <img src={dummyProfile.profileImg} alt="Avatar" />
-            </div>
-            <div className="hidden lg:flex flex-col ml-2">
-              <div className="flex items-center">
-                <span className="font-bold">{dummyProfile.fullName}</span>
-                {dummyProfile.verified && (
-                  <>
-                    <RiVerifiedBadgeFill className="text-primary ml-1" />
-                  </>
-                )}
+          <div className="dropdown dropdown-top">
+            <div
+              tabIndex={0}
+              role="button"
+              className="flex items-center hover:bg-secondary hover:rounded-full p-3"
+            >
+              <div className="w-11 h-11">
+                <img
+                  src={profileData.profileImg || "./avatar-placeholder.png"}
+                  alt="Avatar"
+                  className="rounded-full"
+                />
               </div>
-              <span className="text-gray-500">{dummyProfile.username}</span>
+              <div className="hidden lg:flex flex-col ml-2">
+                <div className="flex items-center">
+                  <span className="font-bold w-[145px] w-10 whitespace-nowrap text-ellipsis overflow-hidden">
+                    {profileData.fullname}
+                  </span>
+                  {profileData.verified && (
+                    <>
+                      <RiVerifiedBadgeFill className="text-primary ml-1" />
+                    </>
+                  )}
+                </div>
+                <span className="text-gray-500">
+                  @
+                  {profileData.username[0].toUpperCase() +
+                    profileData.username.substring(1)}
+                </span>
+              </div>
+              <div className="ml-1 hidden lg:block">
+                <HiDotsHorizontal />
+              </div>
             </div>
-            <div className="ml-1 hidden lg:block">
-              <HiDotsHorizontal />
-            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow-[0_0_5px_1px_rgb(255,255,255,0.3)] rounded-lg"
+            >
+              <li>
+                <a className="font-bold text-[1rem] py-3">
+                  Add an existing account
+                </a>
+              </li>
+              <li>
+                <a
+                  className="font-bold text-[1rem] py-3"
+                  onClick={(e) => logoutHandler(e)}
+                >
+                  Logout {profileData.username}
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

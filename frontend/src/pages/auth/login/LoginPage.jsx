@@ -3,34 +3,44 @@ import { Link } from "react-router-dom";
 import XSvg from "../../../components/svgs/X";
 import { MdOutlineMail, MdPassword } from "react-icons/md";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleOnChange = (e) => {
     e.preventDefault();
     setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
   };
 
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data) => {
+      try {
+        await axios.post("api/auth/login", {
+          ...data,
+        });
+        queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      } catch (error) {
+        toast(error.response.data.error, {
+          position: "bottom-center",
+          style: {
+            backgroundColor: "#1D9BF0",
+            color: "#fff",
+          },
+        });
+      }
+    },
+  });
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(loginForm);
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          ...loginForm,
-        }
-      );
-      console.log(response);
-    } catch (error) {
-      setErrorMessage(error.response.data.error);
-      console.log(`Error at handleFormSubmit: ${error.response.data.error}`);
-    }
+    mutate(loginForm);
   };
 
   return (
@@ -69,7 +79,7 @@ const LoginPage = () => {
             />
           </label>
           <button className="btn btn-primary rounded-full text-white">
-            Login
+            {isPending ? "Loading..." : "Login"}
           </button>
         </form>
         <div className="flex gap-1 my-1 px-14 w-full lg:w-2/3 lg:px-0">

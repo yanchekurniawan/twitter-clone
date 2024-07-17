@@ -3,6 +3,9 @@ import XSvg from "../../../components/svgs/X";
 import { MdOutlineAbc, MdOutlineMail, MdPassword } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -17,12 +20,35 @@ const SignUpPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data) => {
+      try {
+        await axios.post("api/auth/signup", {
+          ...data,
+        });
+        toast("Account created succesfully", {
+          position: "bottom-center",
+          style: {
+            backgroundColor: "1D9BF0",
+            color: "#fff",
+          },
+        });
+      } catch (error) {
+        toast(error.response.data.error, {
+          position: "bottom-center",
+          style: {
+            backgroundColor: "#1D9BF0",
+            color: "#fff",
+          },
+        });
+      }
+    },
+  });
 
-  const isError = false;
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    mutate(formData);
+  };
 
   return (
     <div className="max-w-screen-xl mx-auto flex h-screen px-10">
@@ -83,9 +109,9 @@ const SignUpPage = () => {
             />
           </label>
           <button className="btn btn-primary rounded-full text-white">
-            Sign Up
+            {isPending ? "Loading..." : "Sign Up"}
           </button>
-          {isError && <p className="text-red-500">Something went wrong</p>}
+          {/* {isError && <p className="text-red-500">Something went wrong</p>} */}
         </form>
         <div className="flex flex-col px-14 w-full lg:w-2/3 lg:px-0 gap-2 mt-4">
           <p className="font-bold">Already have an account?</p>
