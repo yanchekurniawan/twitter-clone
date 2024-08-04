@@ -18,7 +18,7 @@ cloudinary.config({
 
 const app = express();
 
-app.use(express.json({ extended: true }));
+app.use(express.json({ extended: true, limit: "5mb" }));
 app.use(cors());
 app.use(cookieParser());
 

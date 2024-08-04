@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import Notification from "../models/notificationModel.js";
 import User from "../models/userModel.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -126,7 +127,7 @@ export const getSuggestedUser = async (req, res) => {
   }
 };
 
-export const upadateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   try {
     const {
       fullname,
@@ -138,6 +139,8 @@ export const upadateUserProfile = async (req, res) => {
       link,
     } = req.body;
     let { profileImg, coverImg } = req.body;
+
+    console.log("profileImg", profileImg);
 
     const userId = req.user._id;
     let user = await User.findById(userId);
@@ -185,13 +188,17 @@ export const upadateUserProfile = async (req, res) => {
     /* IMG UPLOAD WITH CLOUDINARY */
     if (profileImg) {
       /* Delete current profileImg before updating new profileImg */
+      console.log("Masuk");
       if (user.profileImg) {
         await cloudinary.uploader.destroy(
           user.profileImg.split("/").pop().split(".")[0]
         );
+        console.log("destroyed");
       }
       const uploadResult = await cloudinary.uploader.upload(profileImg);
+      console.log("done upload");
       profileImg = uploadResult.secure_url;
+      console.log("profileImg", profileImg);
     }
 
     if (coverImg) {
@@ -211,12 +218,17 @@ export const upadateUserProfile = async (req, res) => {
     user.email = email || user.email;
     user.bio = bio || user.bio;
     user.link = link || user.link;
+    user.profileImg = profileImg || user.profileImg;
+    user.coverImg = coverImg || user.coverImg;
+
+    console.log("user", user);
 
     user = await user.save();
 
     user.password = null;
     res.status(200).json(user);
   } catch (error) {
+    console.log(error);
     console.log(`Error at updateUserProfile controller: ${error.message}`);
     return res.status(500).json({
       error: "Internal server error",
