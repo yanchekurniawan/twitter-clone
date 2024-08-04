@@ -22,7 +22,7 @@ const LoginPage = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (data) => {
       try {
-        await axios.post("api/auth/login", {
+        await axios.post("/api/auth/login", {
           ...data,
         });
         queryClient.invalidateQueries({ queryKey: ["authUser"] });
