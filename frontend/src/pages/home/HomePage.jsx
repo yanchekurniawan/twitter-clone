@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePost from "../../components/commons/CreatePost";
 import Posts from "../../components/commons/Posts";
 
 const HomePage = () => {
   const [feedType, setFeedType] = useState("forYou");
+  useEffect(() => {
+    localStorage.setItem("activeMenu", "home");
+  }, []);
   return (
     <div className="flex-[3] justify-center min-h-screen border-r border-[#2f3336]">
       <div className="sticky top-0 flex flex-grow-[2.5] border-b border-[#2f3336] bg-black bg-opacity-50 backdrop-blur-md">
@@ -39,7 +42,7 @@ const HomePage = () => {
         </div>
       </div>
       <CreatePost />
-      <Posts />
+      <Posts feedType={feedType} />
     </div>
   );
 };
