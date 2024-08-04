@@ -2,7 +2,7 @@ export const dummyProfile = {
   fullName: "Yanche Kurniawan",
   username: "@yanchekurniawan",
   profileImg: "/avatars/boy1.png",
-  coverImg: "cover.png",
+  coverImg: "/cover.png",
   bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   link: "https://yanchekurniawan.com",
   following: ["1", "2", "3"],
@@ -148,5 +148,26 @@ export const postsDummyData = [
       "6658s898",
       "6658s899",
     ],
+  },
+];
+
+export const notifications = [
+  {
+    _id: "1",
+    from: {
+      _id: "1",
+      fullname: "John Doe",
+      profileImg: "/avatars/boy2.png",
+    },
+    type: "follow",
+  },
+  {
+    _id: "2",
+    from: {
+      _id: "2",
+      fullname: "Jane Doe",
+      profileImg: "/avatars/girl1.png",
+    },
+    type: "like",
   },
 ];

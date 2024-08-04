@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "Chirp";
+  src: url("./font/Chirp-Heavy.ttf");
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: "Chirp";
+  src: url("./font/Chirp-Bold.ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Chirp";
+  src: url("./font/Chirp-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Chirp";
+  src: url("./font/Chirp-Medium.ttf");
+  font-weight: 500;
+}
+
+body {
+  font-family: "Chirp", sans-serif !important;
+  font-weight: 400;
+}

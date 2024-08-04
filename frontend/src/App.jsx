@@ -9,6 +9,9 @@ import { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import LoadingSpinner from "./components/commons/LoadingSpinner";
+import NotificationPage from "./pages/notification/NotificationPage";
+import StatusPage from "./pages/status/StatusPage";
+import "./App.css";
 
 function App() {
   const {
@@ -20,9 +23,11 @@ function App() {
     queryKey: ["authUser"],
     queryFn: async () => {
       try {
-        const response = await axios.get("api/auth/mydata");
+        const response = await axios.get("/api/auth/mydata");
+        /* console.log("response", response); */
         return response.data;
       } catch (error) {
+        console.log("ERROR", error);
         if (error.response.data.error) return null;
       }
     },
@@ -38,7 +43,7 @@ function App() {
   }
 
   return (
-    <div className="flex max-w-full mx-auto px-0 md:pl-24 md:pr-36 lg:px-12">
+    <div className="flex max-w-full mx-auto px-0 md:pl-24 md:pr-36 lg:px-12 min-h-screen">
       <div className="flex w-full">
         {authUser && <Sidebar />}
         <Routes>
@@ -55,8 +60,17 @@ function App() {
             element={!authUser ? <LoginPage /> : <Navigate to="/" />}
           />
           <Route
-            path="/profile"
-            element={!authUser ? <ProfilePage /> : <Navigate to="/login" />}
+            path="/profile/:username"
+            /* path="/profile" */
+            element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/notifications"
+            element={authUser ? <NotificationPage /> : <Navigate to="login" />}
+          />
+          <Route
+            path="/:username/status/:postId"
+            element={authUser ? <StatusPage /> : <Navigate to="login" />}
           />
         </Routes>
         {authUser && <TrendsAndFollow />}
