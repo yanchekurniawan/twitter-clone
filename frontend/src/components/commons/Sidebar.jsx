@@ -1,5 +1,5 @@
 /* import React from "react"; */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import XSvg from "../svgs/X";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import {
@@ -24,12 +24,13 @@ import toast from "react-hot-toast";
 /* import { BsSlashSquare, BsSlashSquareFill } from "react-icons/bs"; */
 
 const Sidebar = () => {
-  const [activeMenu, setActiveMenu] = useState("home");
+  const [activeMenu, setActiveMenu] = useState("");
+
+  useEffect(() => {
+    setActiveMenu(localStorage.getItem("activeMenu"));
+  }, []);
 
   const queryClient = useQueryClient();
-
-  const { data: profileData } = useQuery({ queryKey: ["authUser"] });
-  console.log(profileData);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -53,6 +54,10 @@ const Sidebar = () => {
     mutate();
   };
 
+  const { data: profileData } = useQuery({ queryKey: ["authUser"] });
+
+  /* console.log("profileData", profileData); */
+
   return (
     <div className="lg:flex-[1.25] border-r border-[#2f3336]">
       <div className="sticky top-0 left-0">
@@ -67,17 +72,26 @@ const Sidebar = () => {
         <ul className="mt-1 lg:pr-0 flex flex-col items-center lg:items-start">
           <li
             className="flex justify-center lg:justify-start"
-            onClick={() => setActiveMenu("home")}
+            onClick={() => {
+              setActiveMenu("home");
+              localStorage.setItem("activeMenu", "home");
+            }}
           >
             {activeMenu === "home" ? (
-              <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
+              <Link
+                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+                to="/"
+              >
                 <GoHomeFill className="w-7 h-7" />
                 <p className="text-xl font-bold py-[11px] hidden lg:block">
                   Home
                 </p>
               </Link>
             ) : (
-              <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
+              <Link
+                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+                to="/"
+              >
                 <GoHome className="w-7 h-7" />
                 <p className="text-xl py-[11px] hidden lg:block">Home</p>
               </Link>
@@ -85,7 +99,10 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("explore")}
+            onClick={() => {
+              setActiveMenu("explore");
+              localStorage.setItem("activeMenu", "explore");
+            }}
           >
             {activeMenu === "explore" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
@@ -103,17 +120,26 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("notif")}
+            onClick={() => {
+              setActiveMenu("notif");
+              localStorage.setItem("activeMenu", "notif");
+            }}
           >
             {activeMenu === "notif" ? (
-              <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
+              <Link
+                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+                to={`/notifications`}
+              >
                 <RiNotificationFill className="w-7 h-7" />
                 <p className="text-xl font-bold py-[11px] hidden lg:block">
                   Notifications
                 </p>
               </Link>
             ) : (
-              <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
+              <Link
+                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+                to={`/notifications`}
+              >
                 <RiNotificationLine className="w-7 h-7" />
                 <p className="text-xl py-[11px] hidden lg:block">
                   Notifications
@@ -123,7 +149,10 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("message")}
+            onClick={() => {
+              setActiveMenu("message");
+              localStorage.setItem("activeMenu", "message");
+            }}
           >
             {activeMenu === "message" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
@@ -141,7 +170,10 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("grok")}
+            onClick={() => {
+              setActiveMenu("grok");
+              localStorage.setItem("activeMenu", "grok");
+            }}
           >
             {activeMenu === "grok" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
@@ -159,7 +191,10 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("communities")}
+            onClick={() => {
+              setActiveMenu("communities");
+              localStorage.setItem("activeMenu", "communities");
+            }}
           >
             {activeMenu === "communities" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
@@ -177,17 +212,28 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("profile")}
+            onClick={() => {
+              setActiveMenu("profile");
+              localStorage.setItem("activeMenu", "profile");
+            }}
           >
             {activeMenu === "profile" ? (
-              <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
+              <Link
+                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+                /* to="/profile" */
+                to={`/profile/${profileData.username}`}
+              >
                 <BsPersonFill className="w-7 h-7" />
                 <p className="text-xl font-bold py-[11px] hidden lg:block">
                   Profile
                 </p>
               </Link>
             ) : (
-              <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
+              <Link
+                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+                /* to="/profile" */
+                to={`/profile/${profileData.username}`}
+              >
                 <BsPerson className="w-7 h-7" />
                 <p className="text-xl py-[11px] hidden lg:block">Profile</p>
               </Link>
@@ -225,31 +271,37 @@ const Sidebar = () => {
             <div
               tabIndex={0}
               role="button"
-              className="flex items-center hover:bg-secondary hover:rounded-full p-3"
+              className="flex justify-between w-[262px] items-center hover:bg-secondary hover:rounded-full p-3"
             >
-              <div className="w-11 h-11">
-                <img
-                  src={profileData.profileImg || "./avatar-placeholder.png"}
-                  alt="Avatar"
-                  className="rounded-full"
-                />
-              </div>
-              <div className="hidden lg:flex flex-col ml-2">
-                <div className="flex items-center">
-                  <span className="font-bold w-[145px] w-10 whitespace-nowrap text-ellipsis overflow-hidden">
-                    {profileData.fullname}
-                  </span>
-                  {profileData.verified && (
-                    <>
-                      <RiVerifiedBadgeFill className="text-primary ml-1" />
-                    </>
-                  )}
+              <div className="flex items-center">
+                <div className="w-11 h-11">
+                  <img
+                    src={profileData.profileImg || "/avatar-placeholder.png"}
+                    alt="Avatar"
+                    className="rounded-full w-11 h-11 object-cover object-top"
+                  />
                 </div>
-                <span className="text-gray-500">
-                  @
-                  {profileData.username[0].toUpperCase() +
-                    profileData.username.substring(1)}
-                </span>
+                <div className="hidden lg:flex flex-col ml-2">
+                  <div className="flex items-center">
+                    {profileData.fullname.length > 17 ? (
+                      <span className="font-bold w-[145px] whitespace-nowrap text-ellipsis overflow-hidden">
+                        {profileData.fullname}
+                      </span>
+                    ) : (
+                      <span className="font-bold">{profileData.fullname}</span>
+                    )}
+                    {profileData.verified && (
+                      <>
+                        <RiVerifiedBadgeFill className="text-primary ml-1" />
+                      </>
+                    )}
+                  </div>
+                  <span className="text-gray-500">
+                    @{profileData.username}
+                    {/* {profileData.username[0].toUpperCase() +
+                    profileData.username.substring(1)} */}
+                  </span>
+                </div>
               </div>
               <div className="ml-1 hidden lg:block">
                 <HiDotsHorizontal />
@@ -257,7 +309,7 @@ const Sidebar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow-[0_0_5px_1px_rgb(255,255,255,0.3)] rounded-lg"
+              className="dropdown-content menu bg-base-100 z-[1] w-full p-2 shadow-[0_0_5px_1px_rgb(255,255,255,0.3)] rounded-lg"
             >
               <li>
                 <a className="font-bold text-[1rem] py-3">

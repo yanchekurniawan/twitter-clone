@@ -1,12 +1,34 @@
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
-import { trendsDummyData, whoToFollowDummy } from "../../utils/dummy/dummyData";
+import { trendsDummyData } from "../../utils/dummy/dummyData";
 import WhoToFollowSkeletons from "../skeletons/WhoToFollowSkeletons";
 import TrendsSkeleton from "../skeletons/TrendsSkeleton";
-import { numberFormatter } from "../../utils/functions/numberFormatter";
+import { numberFormatter } from "../../utils/functions/myFunctions";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
+import { Link } from "react-router-dom";
+import useFollow from "../hooks/useFollow";
 
 const TrendsAndFollow = () => {
-  const isLoading = false;
+  const { data: suggestedUser, isLoading } = useQuery({
+    queryKey: ["suggestedUser"],
+    queryFn: async () => {
+      try {
+        const response = await axios.get("/api/users/suggested");
+        return response.data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+  });
+
+  const { follow, isPending } = useFollow();
+
+  const followUserHandler = (userId) => {
+    follow(userId);
+  };
+
   return (
     <div className="flex-[1.9] text-center hidden lg:block">
       <div className="flex flex-col pl-7 gap-4 h-full">
@@ -92,29 +114,43 @@ const TrendsAndFollow = () => {
               </>
             )}
             {!isLoading &&
-              whoToFollowDummy?.map((acc, index) => {
+              suggestedUser?.map((acc, index) => {
                 return (
                   <div
                     className="flex px-4 py-3 hover:bg-secondary cursor-pointer"
                     key={index}
                   >
-                    <img src={acc.img} className="w-12 h-12" />
-                    <div className="flex flex-col mr-auto ml-3">
-                      <div className="flex items-center">
-                        <p className="text-start font-bold">{acc.fullName}</p>
-                        {acc.verified && (
-                          <>
-                            <RiVerifiedBadgeFill className="ml-1 text-primary" />
-                          </>
-                        )}
+                    <Link
+                      to={`/profile/${acc.username}`}
+                      className="flex w-full"
+                    >
+                      <img
+                        src={acc.img || "/avatar-placeholder.png"}
+                        className="w-12 h-12 rounded-full"
+                      />
+                      <div className="flex flex-col mr-auto ml-3">
+                        <div className="flex items-center">
+                          <p className="text-start font-bold">{acc.fullname}</p>
+                          {acc.verified && (
+                            <>
+                              <RiVerifiedBadgeFill className="ml-1 text-primary" />
+                            </>
+                          )}
+                        </div>
+                        <p className="text-start text-gray-500 leading-3">
+                          @{acc.username}
+                        </p>
                       </div>
-                      <p className="text-start text-gray-500 leading-3">
-                        {acc.username}
-                      </p>
-                    </div>
-                    <button className="btn btn-sm btn-primary text-white rounded-full self-center">
-                      Follow
-                    </button>
+                      <button
+                        className="btn btn-sm bg-white text-black hover:bg-white hover:bg-opacity-80 transition duration-300 rounded-full self-center"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          followUserHandler(acc._id);
+                        }}
+                      >
+                        {isPending ? <LoadingSpinner width="sm" /> : "Follow"}
+                      </button>
+                    </Link>
                   </div>
                 );
               })}
