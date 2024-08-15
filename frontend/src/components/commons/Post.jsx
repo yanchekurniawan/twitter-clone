@@ -26,8 +26,9 @@ import LoadingSpinner from "../../components/commons/LoadingSpinner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import useComment from "../hooks/useComment";
+import useLike from "../hooks/useLike";
 
 const Post = (props) => {
   const { post } = props;
@@ -57,52 +58,20 @@ const Post = (props) => {
     mutate(postId);
   };
 
-  const { mutate: mutateComment /* isPending */ } = useMutation({
-    mutationKey: ["comment"],
-    mutationFn: async ({ comment: text, postId }) => {
-      try {
-        await axios.post(`/api/posts/comment/${postId}`, {
-          text,
-        });
-        queryClient.refetchQueries({
-          queryKey: ["post"],
-        });
-      } catch (error) {
-        toast(error.response.data.error, {
-          position: "bottom-center",
-          style: {
-            backgroundColor: "#1D9BF0",
-            color: "#fff",
-          },
-        });
-      }
-    },
-  });
+  const { submitComment, isCommentPending } = useComment();
 
   const textareaRef = useRef(null);
   const [comment, setComment] = useState("");
 
   const commentHandler = (postId) => {
     console.log(comment, postId);
-    mutateComment({ comment, postId });
+    submitComment({ comment, postId });
   };
 
-  const { mutate: mutateLike } = useMutation({
-    mutationKey: ["like"],
-    mutationFn: async (postId) => {
-      try {
-        await axios.post(`/api/posts/like/${postId}`);
-        queryClient.refetchQueries({
-          queryKey: ["post"],
-        });
-      } catch (error) {
-        throw new Error(error);
-      }
-    },
-  });
+  const { likePost } = useLike();
 
   const likePostHandler = (postId) => {
-    mutateLike(postId);
+    likePost(postId);
   };
 
   const commentsModalCloseHandler = () => {
@@ -115,7 +84,7 @@ const Post = (props) => {
   }, [textareaRef, comment]);
 
   return (
-    <Link to={`/${post.user.username}/status/${post._id}`} state={post}>
+    <Link to={`/${post.user.username}/status/${post._id}`}>
       <div
         className="flex px-4 py-3 border-b border-[#2f3336] cursor-pointer overflow-hidden hover:bg-white hover:bg-opacity-[0.03] transition duration-300"
         key={post._id}
@@ -226,15 +195,16 @@ const Post = (props) => {
           <div className="flex mt-2 justify-between">
             <div
               className="group flex items-center cursor-pointer"
-              onClick={() =>
-                document.getElementById("commentsModal").showModal()
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("commentsModal").showModal();
+              }}
             >
               <div className="p-2 rounded-full group-hover:bg-primary group-hover:bg-opacity-10 transition duration-300">
                 <FaRegComment className="w-4 h-4 text-gray-500 group-hover:text-primary transition duration-300" />
               </div>
               <p className="font-thin text-sm group-hover:text-primary transition duration-300">
-                {numberFormatter(post.comments.length, 0)}
+                {numberFormatter(post.comments?.length, 0)}
               </p>
             </div>
             <div className="group flex items-center cursor-pointer ">
@@ -242,27 +212,30 @@ const Post = (props) => {
                 <BiRepost className="w-6 h-6 text-gray-500 group-hover:text-green-500 transition duration-300" />
               </div>
               <p className="font-thin text-sm group-hover:text-green-500 transition duration-300">
-                {numberFormatter(post.comments.length, 0)}
+                {numberFormatter(post.comments?.length, 0)}
               </p>
             </div>
             <div className="group flex items-center cursor-pointer">
               <div
                 className="p-1 rounded-full group-hover:bg-pink-600 group-hover:bg-opacity-10 transition duration-300"
-                onClick={() => likePostHandler(post._id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  likePostHandler(post._id);
+                }}
               >
-                {post.likes.includes(myProfile._id) ? (
+                {post.likes?.includes(myProfile._id) ? (
                   <TiHeart className="w-[22px] h-[22px] text-pink-600 group-hover:text-pink-600 transition duration-300"></TiHeart>
                 ) : (
                   <TiHeartOutline className="w-[22px] h-[22px] text-gray-500 group-hover:text-pink-600 transition duration-300" />
                 )}
               </div>
-              {post.likes.includes(myProfile._id) ? (
+              {post.likes?.includes(myProfile._id) ? (
                 <p className="font-thin text-sm text-pink-600 group-hover:text-pink-600 transition duration-500">
-                  {numberFormatter(post.likes.length, 0)}
+                  {numberFormatter(post.likes?.length, 0)}
                 </p>
               ) : (
                 <p className="font-thin text-sm group-hover:text-pink-600 transition duration-500">
-                  {numberFormatter(post.likes.length, 0)}
+                  {numberFormatter(post.likes?.length, 0)}
                 </p>
               )}
             </div>
@@ -271,7 +244,7 @@ const Post = (props) => {
                 <BiBarChart className="w-5 h-5 text-gray-500 group-hover:text-primary transition duration-300" />
               </div>
               <p className="font-thin text-sm group-hover:text-primary transition duration-300">
-                {numberFormatter(post.likes.length, 0)}
+                {numberFormatter(post.likes?.length, 0)}
               </p>
             </div>
             <div className="flex items-center">
@@ -290,6 +263,7 @@ const Post = (props) => {
         <dialog
           id="commentsModal"
           className="modal modal-top flex justify-center"
+          onClick={(e) => e.preventDefault()}
         >
           <div className="modal-box w-11/12 max-w-2xl rounded-xl mt-6">
             <div className="flex items-center justify-between">
@@ -334,6 +308,7 @@ const Post = (props) => {
                   <textarea
                     ref={textareaRef}
                     value={comment}
+                    maxLength={280}
                     onChange={(e) => setComment(e.target.value)}
                     className="textar bg-transparent w-full h-fit p-0 ml-3 text-xl resize-none border-none focus:outline-none placeholder-gray-500 mt-2"
                     placeholder="Post your reply"
@@ -365,7 +340,11 @@ const Post = (props) => {
                   className="btn btn-primary btn-sm text-white rounded-full"
                   onClick={() => commentHandler(post._id)}
                 >
-                  Reply
+                  {isCommentPending ? (
+                    <LoadingSpinner bgColor="white" />
+                  ) : (
+                    "Reply"
+                  )}
                 </button>
               </div>
             </div>

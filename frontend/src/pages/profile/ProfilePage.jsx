@@ -13,7 +13,7 @@ import ProfileSkeleton from "../../components/skeletons/ProfileSkeleton";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
 import { FaChevronRight } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BsThreeDots } from "react-icons/bs";
 import { HiOutlineMail } from "react-icons/hi";
@@ -132,11 +132,21 @@ const ProfilePage = () => {
     updateProfile(editProfileData);
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="flex-[3] justify-center min-h-screen border-r border-[#2f3336]">
       <div className="flex flex-col">
-        <div className="sticky top-0 flex items-center px-4 py-1 z-10 bg-black bg-opacity-75 backdrop-blur-md">
-          <IoMdArrowRoundBack className="w-5 h-5" />
+        <div className="sticky top-0 flex items-center px-4 py-1 z-10 bg-black bg-opacity-75 backdrop-blur-md ">
+          <div className="p-2 rounded-full hover:bg-secondary transition duration-300 cursor-pointer">
+            <IoMdArrowRoundBack
+              className="w-5 h-5"
+              onClick={() => {
+                localStorage.setItem("activeMenu", "home");
+                navigate(-1);
+              }}
+            />
+          </div>
           <div className="flex flex-col ml-9">
             <div className="flex items-center">
               <p className="text-xl font-bold">{profileData?.fullname}</p>

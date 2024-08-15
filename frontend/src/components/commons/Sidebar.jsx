@@ -16,7 +16,7 @@ import {
 } from "react-icons/ri";
 import { HiMail, HiOutlineMail, HiDotsHorizontal } from "react-icons/hi";
 import { BsPeople, BsPeopleFill, BsPerson, BsPersonFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -70,40 +70,29 @@ const Sidebar = () => {
           </Link>
         </div>
         <ul className="mt-1 lg:pr-0 flex flex-col items-center lg:items-start">
-          <li
-            className="flex justify-center lg:justify-start"
-            onClick={() => {
-              setActiveMenu("home");
-              localStorage.setItem("activeMenu", "home");
-            }}
-          >
-            {activeMenu === "home" ? (
-              <Link
-                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
-                to="/"
-              >
-                <GoHomeFill className="w-7 h-7" />
-                <p className="text-xl font-bold py-[11px] hidden lg:block">
-                  Home
-                </p>
-              </Link>
-            ) : (
-              <Link
-                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
-                to="/"
-              >
-                <GoHome className="w-7 h-7" />
-                <p className="text-xl py-[11px] hidden lg:block">Home</p>
-              </Link>
-            )}
+          <li className="flex justify-center lg:justify-start">
+            <NavLink
+              to="/"
+              className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+            >
+              {({ isActive }) =>
+                isActive ? (
+                  <>
+                    <GoHomeFill className="w-7 h-7" />
+                    <p className="text-xl font-bold py-[11px] hidden lg:block">
+                      Home
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <GoHome className="w-7 h-7" />
+                    <p className="text-xl py-[11px] hidden lg:block">Home</p>
+                  </>
+                )
+              }
+            </NavLink>
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => {
-              setActiveMenu("explore");
-              localStorage.setItem("activeMenu", "explore");
-            }}
-          >
+          <li className="flex justify-end lg:justify-start">
             {activeMenu === "explore" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
                 <PiMagnifyingGlassBold className="w-7 h-7" />
@@ -118,42 +107,31 @@ const Sidebar = () => {
               </Link>
             )}
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => {
-              setActiveMenu("notif");
-              localStorage.setItem("activeMenu", "notif");
-            }}
-          >
-            {activeMenu === "notif" ? (
-              <Link
-                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
-                to={`/notifications`}
-              >
-                <RiNotificationFill className="w-7 h-7" />
-                <p className="text-xl font-bold py-[11px] hidden lg:block">
-                  Notifications
-                </p>
-              </Link>
-            ) : (
-              <Link
-                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
-                to={`/notifications`}
-              >
-                <RiNotificationLine className="w-7 h-7" />
-                <p className="text-xl py-[11px] hidden lg:block">
-                  Notifications
-                </p>
-              </Link>
-            )}
+          <li className="flex justify-end lg:justify-start">
+            <NavLink
+              to="/notifications"
+              className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+            >
+              {({ isActive }) =>
+                isActive ? (
+                  <>
+                    <RiNotificationFill className="w-7 h-7" />
+                    <p className="text-xl font-bold py-[11px] hidden lg:block">
+                      Notifications
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <RiNotificationLine className="w-7 h-7" />
+                    <p className="text-xl py-[11px] hidden lg:block">
+                      Notifications
+                    </p>
+                  </>
+                )
+              }
+            </NavLink>
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => {
-              setActiveMenu("message");
-              localStorage.setItem("activeMenu", "message");
-            }}
-          >
+          <li className="flex justify-end lg:justify-start">
             {activeMenu === "message" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
                 <HiMail className="w-7 h-7" />
@@ -168,13 +146,7 @@ const Sidebar = () => {
               </Link>
             )}
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => {
-              setActiveMenu("grok");
-              localStorage.setItem("activeMenu", "grok");
-            }}
-          >
+          <li className="flex justify-end lg:justify-start">
             {activeMenu === "grok" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
                 <RiSlashCommands2 className="w-7 h-7" />
@@ -189,13 +161,7 @@ const Sidebar = () => {
               </Link>
             )}
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => {
-              setActiveMenu("communities");
-              localStorage.setItem("activeMenu", "communities");
-            }}
-          >
+          <li className="flex justify-end lg:justify-start">
             {activeMenu === "communities" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
                 <BsPeopleFill className="w-7 h-7" />
@@ -210,39 +176,29 @@ const Sidebar = () => {
               </Link>
             )}
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => {
-              setActiveMenu("profile");
-              localStorage.setItem("activeMenu", "profile");
-            }}
-          >
-            {activeMenu === "profile" ? (
-              <Link
-                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
-                /* to="/profile" */
-                to={`/profile/${profileData.username}`}
-              >
-                <BsPersonFill className="w-7 h-7" />
-                <p className="text-xl font-bold py-[11px] hidden lg:block">
-                  Profile
-                </p>
-              </Link>
-            ) : (
-              <Link
-                className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
-                /* to="/profile" */
-                to={`/profile/${profileData.username}`}
-              >
-                <BsPerson className="w-7 h-7" />
-                <p className="text-xl py-[11px] hidden lg:block">Profile</p>
-              </Link>
-            )}
+          <li className="flex justify-end lg:justify-start">
+            <NavLink
+              to={`/${profileData.username}`}
+              className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0"
+            >
+              {({ isActive }) =>
+                isActive ? (
+                  <>
+                    <BsPersonFill className="w-7 h-7" />
+                    <p className="text-xl font-bold py-[11px] hidden lg:block">
+                      Profile
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <BsPerson className="w-7 h-7" />
+                    <p className="text-xl py-[11px] hidden lg:block">Profile</p>
+                  </>
+                )
+              }
+            </NavLink>
           </li>
-          <li
-            className="flex justify-end lg:justify-start"
-            onClick={() => setActiveMenu("more")}
-          >
+          <li className="flex justify-end lg:justify-start">
             {activeMenu === "more" ? (
               <Link className="flex items-center hover:rounded-full hover:bg-secondary gap-4 p-[0.7rem] lg:pl-3 lg:pr-5 lg:py-0">
                 <PiDotsThreeCircleFill className="w-7 h-7" />
@@ -271,7 +227,7 @@ const Sidebar = () => {
             <div
               tabIndex={0}
               role="button"
-              className="flex justify-between w-[262px] items-center hover:bg-secondary hover:rounded-full p-3"
+              className="flex justify-between lg:w-[262px] items-center hover:bg-secondary hover:rounded-full p-3"
             >
               <div className="flex items-center">
                 <div className="w-11 h-11">

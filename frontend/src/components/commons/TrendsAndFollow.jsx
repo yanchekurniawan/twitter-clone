@@ -120,10 +120,7 @@ const TrendsAndFollow = () => {
                     className="flex px-4 py-3 hover:bg-secondary cursor-pointer"
                     key={index}
                   >
-                    <Link
-                      to={`/profile/${acc.username}`}
-                      className="flex w-full"
-                    >
+                    <Link to={`/${acc.username}`} className="flex w-full">
                       <img
                         src={acc.img || "/avatar-placeholder.png"}
                         className="w-12 h-12 rounded-full"
