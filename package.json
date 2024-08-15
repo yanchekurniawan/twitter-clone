@@ -4,8 +4,9 @@
   "description": "",
   "main": "backend/App.js",
   "scripts": {
-    "dev": "nodemon backend/App.js",
-    "start": "node backend/App.js"
+    "dev": "set NODE_ENV=development && nodemon backend/App.js",
+    "start": "set NODE_ENV=production && node backend/App.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "Yanche Kurniawan Mangalik",
