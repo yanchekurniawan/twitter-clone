@@ -9,7 +9,7 @@ import connectToMongoDB from "./db/databaseConfig.js";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import cors from "cors";
-import { getAllPost } from "./controllers/postController.js";
+import axios from "axios";
 
 dotenv.config();
 cloudinary.config({
@@ -29,7 +29,10 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.json("Hello");
 });
-app.get("/post", getAllPost);
+app.get("/post", (req, res) => {
+  const response = axios.get("https://reqres.in/api/users");
+  res.json(response.data);
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
