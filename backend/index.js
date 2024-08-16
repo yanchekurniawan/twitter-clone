@@ -4,7 +4,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
-import testRoutes from './routes/testRoutes.js'
+import testRoutes from "./routes/testRoutes.js";
 import dotenv from "dotenv";
 import connectToMongoDB from "./db/databaseConfig.js";
 import cookieParser from "cookie-parser";
@@ -26,7 +26,10 @@ app.use(express.json({ extended: true, limit: "5mb" }));
 app.use(cors());
 app.use(cookieParser());
 
-app.use("/api/testing", testRoutes)
+app.get("/", (req, res) => {
+  res.json("Hello Guys");
+});
+app.use("/api/testing", testRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
