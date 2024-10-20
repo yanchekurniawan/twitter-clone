@@ -9,6 +9,7 @@ import connectToMongoDB from "./db/databaseConfig.js";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import cors from "cors";
+import User from "./models/userModel.js";
 
 dotenv.config();
 cloudinary.config({
@@ -25,11 +26,12 @@ app.use(express.json({ extended: true, limit: "5mb" }));
 app.use(cors());
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   try {
-    res.json("Hello"); 
+    const data = await User.find();
+    return res.status(200).json(data);
   } catch (error) {
-    res.json(error)
+    res.status(400).json(error);
   }
 });
 app.use("/api/auth", authRoutes);
